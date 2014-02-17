@@ -8,17 +8,23 @@ var BLACK = '000000';
 var WIDTH;
 var HEIGHT;
 
+var context;
+
 var x = 150;
 var y = 150;
 var dx = 2;
 var dy = 4;
-var context;
+
+var paddlex;
+var paddleh = 10;
+var paddlew = 75;
 
 init() {
   CanvasElement canvas = querySelector('#canvas');
   WIDTH = canvas.width;
   HEIGHT = canvas.height;
   context = canvas.getContext("2d");
+  paddlex = WIDTH / 2;
 }
 
 rectangle(x, y, w, h, color) {
