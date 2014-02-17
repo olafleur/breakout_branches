@@ -1,30 +1,36 @@
 import 'dart:html';
 import 'dart:math';
 
-void main() {
-  // get a reference to the canvas
+var x = 150;
+var y = 150;
+var dx = 2;
+var dy = 4;
+var ctx;
+
+init() {
   var canvas = querySelector('#canvas');
-  var ctx = canvas.getContext("2d");
+  ctx = canvas.getContext("2d");
+  // redraw
+  window.animationFrame.then(gameLoop);
+}
 
-  // draw a circle
-  ctx.fillStyle = "#00a308";
+gameLoop(num delta) {
+  draw();
+  window.animationFrame.then(gameLoop);
+}
+
+draw() {
+  ctx.clearRect(0, 0, 300, 300);
   ctx.beginPath();
-  ctx.arc(220, 220, 50, 0, PI * 2, true);
+  ctx.arc(x, y, 10, 0, PI * 2, true);
   ctx.closePath();
   ctx.fill();
+  x += dx;
+  y += dy;
+}
 
-  ctx.fillStyle = "#ff1c0a";
-  ctx.beginPath();
-  ctx.arc(100, 100, 100, 0, PI * 2, true);
-  ctx.closePath();
-  ctx.fill();
-
-  //the rectangle is half transparent
-  ctx.fillStyle = "rgba(255, 255, 0, .5)";
-  ctx.beginPath();
-  ctx.rect(15, 150, 120, 120);
-  ctx.closePath();
-  ctx.fill();
+main() {
+  init();
 }
 
 
