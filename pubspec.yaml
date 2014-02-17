@@ -1,4 +1,4 @@
-name: breakout01
+name: breakout
 description: A sample web application
 dependencies:
   browser: any
