@@ -1,42 +1,63 @@
 part of breakout;
 
-var paddlex;
-var paddleh = 10;
-var paddlew = 75;
-var paddleColor;
-var paddleOutline;
+class Racket {
+  static const num HIGHT = 10;
+  static const num WIDTH = 75;
 
-var rightDown = false;
-var leftDown = false;
+  CanvasElement canvas;
+  CanvasRenderingContext2D context;
+  num x, y;
+  bool rightDown = false;
+  bool leftDown = false;
+  String fillColor, styleColor;
 
-initRacket(color, outline) {
-  paddlex = canvasw / 2;
-  paddleColor = color;
-  paddleOutline = outline;
+  Racket(this.context, this.fillColor, [this.styleColor]) {
+    canvas = context.canvas;
+    x = canvas.width / 2;
+    y = canvas.height - HIGHT;
+    document.onKeyDown.listen(onKeyDown);
+    document.onKeyUp.listen(onKeyUp);
+    document.onMouseMove.listen(onMouseMove);
+  }
 
-  document.onKeyDown.listen(onKeyDown);
-  document.onKeyUp.listen(onKeyUp);
-  document.onMouseMove.listen(onMouseMove);
-}
+  draw() {
+    context
+      ..fillStyle = fillColor
+      ..beginPath()
+      ..rect(x, y, WIDTH, HIGHT)
+      ..closePath()
+      ..fill();
+    if (styleColor != null) {
+      context
+        ..strokeStyle = styleColor
+        ..stroke();
+    }
+  }
 
-drawRacket() =>
-  rectangle(paddlex, canvash - paddleh, paddlew, paddleh, WHITE, BLACK);
+  // Set rightDown or leftDown if the right or left keys are down.
+  onKeyDown(event) {
+    if (event.keyCode == 39) {
+      rightDown = true;
+    } else if (event.keyCode == 37) {
+      leftDown = true;
+    }
+  }
 
-// set rightDown or leftDown if the right or left keys are down
-onKeyDown(event) {
-  if (event.keyCode == 39) rightDown = true;
-  else if (event.keyCode == 37) leftDown = true;
-}
+  // Unset rightDown or leftDown when the right or left key is released.
+  onKeyUp(event) {
+    if (event.keyCode == 39) {
+      rightDown = false;
+    } else if (event.keyCode == 37) {
+      leftDown = false;
+    }
+  }
 
-// and unset them when the right or left key is released
-onKeyUp(event) {
-  if (event.keyCode == 39) rightDown = false;
-  else if (event.keyCode == 37) leftDown = false;
-}
-
-onMouseMove(event) {
-  if (event.page.x > canvasMinX && event.page.x < canvasMaxX) {
-    paddlex = max(event.page.x - canvasMinX - (paddlew / 2), 0);
-    paddlex = min(canvasw - paddlew, paddlex);
+  onMouseMove(event) {
+    var canvasMinX = canvas.offset.left;
+    var canvasMaxX = canvasMinX + canvas.width;
+    if (event.page.x > canvasMinX && event.page.x < canvasMaxX) {
+      x = max(event.page.x - canvasMinX - (WIDTH / 2), 0);
+      x = min(context.canvas.width - WIDTH, x);
+    }
   }
 }

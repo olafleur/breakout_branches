@@ -1,17 +1,24 @@
 part of breakout;
 
-var radius = 10;
-var x = 150;
-var y = 150;
-var ballColor;
-var ballOutline;
+class Ball {
+  static const num RADIUS = 10;
 
-var dx = 2;
-var dy = 4;
+  CanvasRenderingContext2D context;
+  num x;
+  num y;
+  String color;
 
-initBall(color, outline) {
-  ballColor = color;
-  ballOutline = outline;
+  Ball(this.context, this.color) {
+    x = canvas.width / 2;
+    y = canvas.height / 2;
+  }
+
+  draw() {
+    context
+      ..fillStyle = color
+      ..beginPath()
+      ..arc(x, y, RADIUS, 0, PI * 2, true)
+      ..closePath()
+      ..fill();
+  }
 }
-
-drawBall() => circle(x, y, radius, ballColor, ballOutline);
