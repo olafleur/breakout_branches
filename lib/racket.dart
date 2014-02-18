@@ -7,8 +7,7 @@ class Racket {
   CanvasElement canvas;
   CanvasRenderingContext2D context;
   num x, y;
-  bool rightDown = false;
-  bool leftDown = false;
+  bool rightDown = false, leftDown = false;
   String fillColor, styleColor;
 
   Racket(this.context, this.fillColor, [this.styleColor]) {
@@ -22,11 +21,11 @@ class Racket {
 
   draw() {
     context
-      ..fillStyle = fillColor
-      ..beginPath()
-      ..rect(x, y, WIDTH, HIGHT)
-      ..closePath()
-      ..fill();
+    ..fillStyle = fillColor
+    ..beginPath()
+    ..rect(x, y, WIDTH, HIGHT)
+    ..closePath()
+    ..fill();
     if (styleColor != null) {
       context
         ..strokeStyle = styleColor
@@ -36,22 +35,17 @@ class Racket {
 
   // Set rightDown or leftDown if the right or left keys are down.
   onKeyDown(event) {
-    if (event.keyCode == 39) {
-      rightDown = true;
-    } else if (event.keyCode == 37) {
-      leftDown = true;
-    }
+    if (event.keyCode == 39)      rightDown = true;
+    else if (event.keyCode == 37) leftDown  = true;
   }
 
   // Unset rightDown or leftDown when the right or left key is released.
   onKeyUp(event) {
-    if (event.keyCode == 39) {
-      rightDown = false;
-    } else if (event.keyCode == 37) {
-      leftDown = false;
-    }
+    if (event.keyCode == 39)      rightDown = false;
+    else if (event.keyCode == 37) leftDown  = false;
   }
 
+  // Change a position of the racket with the mouse left or right mouvement.
   onMouseMove(event) {
     var canvasMinX = canvas.offset.left;
     var canvasMaxX = canvasMinX + canvas.width;
