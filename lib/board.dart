@@ -1,16 +1,15 @@
 part of breakout;
 
 class Board {
-  static const String WHITE = 'ffffff';
-  static const String BLACK = '000000';
+  static const String WHITE =  '#ffffff';
+  static const String BLACK =  '#000000';
+  static const String YELLOW = '#ffff00';
 
   CanvasElement canvas;
   CanvasRenderingContext2D context;
 
-  num width;
-  num height;
-  num dx = 2;
-  num dy = 4;
+  num width, height;
+  num speed = 1, dx = 2, dy = 4;
 
   Wall wall;
   Ball ball;
@@ -20,9 +19,30 @@ class Board {
     context = canvas.getContext("2d");
     width = canvas.width;
     height = canvas.height;
-    fill();
+    clear();
+    querySelector('#play').onClick.listen((e) {
+      init();
+    });
+    SelectElement selectSpeed = querySelector('#speed');
+    selectSpeed.value = '1';
+    selectSpeed.onChange.listen((Event e) {
+      var speed = selectSpeed.value;
+      switch (speed) {
+        case '1':
+          dx = 2; dy = 4;
+          break;
+        case '2':
+          dx = 3; dy = 6;
+          break;
+        case '3':
+          dx = 4; dy = 8;
+      }
+    });
+  }
+
+  init() {
     wall = new Wall(this);
-    ball = new Ball(this, WHITE);
+    ball = new Ball(this, WHITE, YELLOW);
     racket = new Racket(this, WHITE, BLACK);
     // redraw
     window.animationFrame.then(gameLoop);
@@ -34,16 +54,8 @@ class Board {
     }
   }
 
-  fill() {
-    context
-    ..fillStyle = BLACK
-    ..beginPath()..rect(0, 0, width, height)..closePath()
-    ..fill();
-  }
-
   clear() {
-    context.clearRect(0, 0, width, height);
-    fill();
+    rectangle(context, 0, 0, width, height, BLACK);
   }
 
   bool draw() {
@@ -71,8 +83,7 @@ class Board {
       } else if (ball.y + dy + Ball.RADIUS > height) return false;
     }
 
-    ball.x += dx;
-    ball.y += dy;
+    ball.x += dx; ball.y += dy;
     return true;
   }
 }

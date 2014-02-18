@@ -1,0 +1,10 @@
+To Do
+
+Current spirals
+
++ nothing so far
+
+Future spirals
+
+- paint each brick with a random color
+- save the best time per speed in the local storage
