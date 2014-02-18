@@ -2,13 +2,13 @@ import 'package:breakout/breakout.dart';
 
 import 'dart:html';
 
-var rightDown = false;
-var leftDown = false;
+var canvasMinX;
+var canvasMaxX;
 
 start() {
   init();
-  document.onKeyDown.listen(onKeyDown);
-  document.onKeyUp.listen(onKeyUp);
+  _initMouse();
+  document.onMouseMove.listen(onMouseMove);
   // redraw
   window.animationFrame.then(gameLoop);
 }
@@ -19,16 +19,15 @@ gameLoop(num delta) {
   }
 }
 
-// set rightDown or leftDown if the right or left keys are down
-onKeyDown(evt) {
-  if (evt.keyCode == 39) rightDown = true;
-  else if (evt.keyCode == 37) leftDown = true;
+_initMouse() {
+  canvasMinX = canvas.offset.left;
+  canvasMaxX = canvasMinX + WIDTH;
 }
 
-// and unset them when the right or left key is released
-onKeyUp(evt) {
-  if (evt.keyCode == 39) rightDown = false;
-  else if (evt.keyCode == 37) leftDown = false;
+onMouseMove(evt) {
+  if (evt.page.x > canvasMinX && evt.page.x < canvasMaxX) {
+    paddlex = evt.page.x - canvasMinX;
+  }
 }
 
 bool draw() {
