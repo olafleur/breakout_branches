@@ -3,19 +3,16 @@ part of breakout;
 class Ball {
   static const num RADIUS = 10;
 
-  CanvasRenderingContext2D context;
+  Board board;
   num x, y;
-  String color;
+  String fillColor, styleColor;
 
-  Ball(this.context, this.color) :
-    x = canvas.width / 2, y = canvas.height / 2;
+  Ball(this.board, this.fillColor, [this.styleColor]) {
+    x = board.canvas.width / 2;
+    y = board.canvas.height / 2;
+  }
 
   draw() {
-    context
-      ..fillStyle = color
-      ..beginPath()
-      ..arc(x, y, RADIUS, 0, PI * 2, true)
-      ..closePath()
-      ..fill();
+    circle(board.context, x, y, RADIUS, fillColor);
   }
 }

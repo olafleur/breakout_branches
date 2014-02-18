@@ -1,66 +1,78 @@
 part of breakout;
 
-CanvasElement canvas;
-var canvasw;
-var canvash;
-var canvasMinX;
-var canvasMaxX;
-var context;
+class Board {
+  static const String WHITE = 'ffffff';
+  static const String BLACK = '000000';
 
-initBoard() {
-  canvas = querySelector('#canvas');
-  canvasw = canvas.width;
-  canvash = canvas.height;
-  context = canvas.getContext("2d");
-  canvasMinX = canvas.offset.left;
-  canvasMaxX = canvasMinX + canvasw;
-}
+  CanvasElement canvas;
+  CanvasRenderingContext2D context;
 
-bool drawBoard() {
-  clearBoard();
-  drawBall();
+  num width;
+  num height;
+  num dx = 2;
+  num dy = 4;
 
-  if (!drawBricks()) return false; // user wins
+  Wall wall;
+  Ball ball;
+  Racket racket;
 
-  // have we hit a brick?
-  // to learn about real collision detection:
-  // http://www.metanetsoftware.com/
-  var rowHeight = BRICK_HEIGHT + PADDING;
-  var colWidth = brickw + PADDING;
-  int row = (y / rowHeight).floor();
-  int col = (x / colWidth).floor();
-  if (row < NROWS && col < NCOLS && row >= 0 && col >= 0 &&
-      y < NROWS * rowHeight && bricks[row][col] == 1) {
-    // if so, reverse the ball and mark the brick as broken
-    dy = -dy;
-    bricks[row][col] = 0;
+  Board(this.canvas) {
+    context = canvas.getContext("2d");
+    width = canvas.width;
+    height = canvas.height;
+    fill();
+    wall = new Wall(this);
+    ball = new Ball(this, WHITE);
+    racket = new Racket(this, WHITE, BLACK);
+    // redraw
+    window.animationFrame.then(gameLoop);
   }
 
-  // move the paddle if left or right is currently pressed
-  if (rightDown) paddlex += 5;
-  else if (leftDown) paddlex -= 5;
-  drawRacket();
-
-  if (x + dx + radius > canvasw || x + dx - radius < 0) dx = -dx;
-
-  if (y + dy - radius < 0) dy = -dy;
-  else if (y + dy + radius > canvash - paddleh) {
-    if (x > paddlex && x < paddlex + paddlew) {
-      // move the ball differently based on where it hits the paddle
-      dx = 8 * ((x- (paddlex + paddlew / 2)) / paddlew);
-      dy = -dy;
+  gameLoop(num delta) {
+    if (draw()) {
+      window.animationFrame.then(gameLoop);
     }
-    else if (y + dy + radius > canvash) return false; // game over
   }
 
-  x += dx;
-  y += dy;
-  return true;
-}
+  fill() {
+    context
+    ..fillStyle = BLACK
+    ..beginPath()..rect(0, 0, width, height)..closePath()
+    ..fill();
+  }
 
-paintBoard() => rectangle(0, 0, canvasw, canvash, BLACK);
+  clear() {
+    context.clearRect(0, 0, width, height);
+    fill();
+  }
 
-clearBoard() {
-  rectangle(0, 0, canvasw, canvash, WHITE);
-  paintBoard();
+  bool draw() {
+    clear();
+    ball.draw();
+    racket.draw();
+    if (!wall.draw()) return false; // user wins
+
+    // If hit, reverse the ball.
+    if (wall.hitBy(ball)) dy = -dy;
+
+    // Move the racket if left or right is currently pressed.
+    if (racket.rightDown) racket.x += 5;
+    else if (racket.leftDown) racket.x -= 5;
+
+    if (ball.x + dx + Ball.RADIUS > width ||
+        ball.x + dx - Ball.RADIUS < 0) dx = -dx;
+
+    if (ball.y + dy - Ball.RADIUS < 0) dy = -dy;
+    else if (ball.y + dy + Ball.RADIUS > height - Racket.HIGHT) {
+      if (ball.x > racket.x && ball.x < racket.x + Racket.WIDTH) {
+        // Move the ball differently based on where it hits the racket.
+        dx = 8 * ((ball.x- (racket.x + Racket.WIDTH / 2)) / Racket.WIDTH);
+        dy = -dy;
+      } else if (ball.y + dy + Ball.RADIUS > height) return false;
+    }
+
+    ball.x += dx;
+    ball.y += dy;
+    return true;
+  }
 }
