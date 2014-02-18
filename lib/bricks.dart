@@ -9,12 +9,13 @@ class Wall {
   Board board;
   num brickWidth;
   var bricks = new List(NROWS);
-  var rowColors = ["#ff1c0a", "#fffd0a", "#00a308", "#0008db", "#eb0093"];
+  var brickRowColors = new List(NROWS);
 
   Wall(this.board) {
     brickWidth = (board.canvas.width / NCOLS) - 1;
     for (var i = 0; i < NROWS; i++) {
       bricks[i] = new List(NCOLS);
+      brickRowColors[i] = randomColorCode();
       for (var j = 0; j < NCOLS; j++) {
         bricks[i][j] = 1;
       }
@@ -45,7 +46,7 @@ class Wall {
             (j * (brickWidth + PADDING)) + PADDING,
             (i * (BRICK_HEIGHT + PADDING)) + PADDING,
             brickWidth, BRICK_HEIGHT,
-            rowColors[i]);
+            brickRowColors[i]);
           count++;
         }
       }
