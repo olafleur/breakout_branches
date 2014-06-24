@@ -1,4 +1,4 @@
-
+(Ceci est une version qui montre comment on pourrait avantageusement se servir des branches de git pour démonstration pédagogique. Le code original est de Dzenan).
 ##Breakout Game in Dart with Canvas
 
 **Categories**: education, game, canvas, circle, rectangle, HTML5.
